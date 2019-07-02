@@ -1,0 +1,84 @@
+apply plugin: 'com.android.library'
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+
+android {
+    compileSdkVersion 28
+    buildToolsVersion "29.0.0"
+
+
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+}
+
+kotlin {
+    targets {
+        fromPreset(presets.android, 'android')
+        def buildForDevice = project.findProperty("device")?.toBoolean() ?: false
+        def iosPreset = (buildForDevice) ? presets.iosArm64 : presets.iosX64
+        fromPreset(iosPreset, 'ios') {
+            binaries {
+                framework {
+                    // Disable bitcode embedding for the simulator build.
+                    if (!buildForDevice) {
+                        embedBitcode("disable")
+                    }
+                }
+            }
+        }
+    }
+
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation 'org.jetbrains.kotlin:kotlin-stdlib-common'
+            }
+        }
+
+        iosMain {
+            dependencies {
+            }
+        }
+    }
+
+    task packForXCode {
+        def buildType = project.findProperty("kotlin.build.type") ?: "DEBUG"
+        dependsOn "link${buildType.toLowerCase().capitalize()}FrameworkIos"
+
+        doLast {
+            def srcFile = kotlin.targets.ios.binaries.getFramework(buildType).outputFile
+            def targetDir = buildDir
+            copy {
+                from srcFile.parent
+                into targetDir
+                include 'shared.framework/**'
+                include 'shared.framework.dSYM'
+            }
+        }
+    }
+
+    tasks.build.dependsOn packForXCode
+}
