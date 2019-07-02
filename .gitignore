@@ -80,3 +80,14 @@ lint/generated/
 lint/outputs/
 lint/tmp/
 # lint/reports/
+.idea/codeStyles/codeStyleConfig.xml
+.idea/codeStyles/Project.xml
+.idea/encodings.xml
+.idea/misc.xml
+.idea/runConfigurations.xml
+app/app.iml
+shared/shared.iml
+shared/shared_commonMain.iml
+shared/shared_iosMain.iml
+shared/shared_iosTest.iml
+app/app.iml
