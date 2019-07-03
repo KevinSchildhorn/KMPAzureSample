@@ -22,7 +22,7 @@ steps:
       tasks: 'assembleDebug'
       displayName: 'Building For Android'
 
-- task: Gradle@2
+  - task: Gradle@2
     inputs:
       workingDirectory: ''
       gradleWrapperFile: 'gradlew'
