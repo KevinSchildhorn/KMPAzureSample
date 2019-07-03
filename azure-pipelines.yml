@@ -8,7 +8,7 @@ trigger:
 
 pool:
   vmImage: 'macOS-10.13'
-
+  
 steps:
   - task: Gradle@2
     inputs:
@@ -36,7 +36,7 @@ steps:
   - task: Xcode@5
     inputs:
       actions: 'build'
-      scheme: ''
+      scheme: 'iosApp'
       sdk: 'iphoneos'
       configuration: 'Release'
       xcWorkspacePath: '**/*.xcodeproj/project.xcworkspace'
